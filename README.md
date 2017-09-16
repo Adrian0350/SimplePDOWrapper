@@ -1,5 +1,3 @@
-[![PHP version](https://badge.fury.io/ph/adrian0350%2Fsimple-pdo-wrapper@2x.png)](https://badge.fury.io/ph/adrian0350%2Fsimple-pdo-wrapper)
-
 # Introduction
 
 SimplePDOWrapper's purpose is to help you handle simple database actions with a reduced
@@ -11,7 +9,7 @@ amount of code as well as writting less-messy code following a simple structure.
 
 # PHP Version
 
-This class is compatible with *PHP 5.0 and above* due to the *PHP PDO* class dependency.
+This class is compatible with **PHP 5.0 and above** due to the **PHP PDO** class dependency.
 
 # Installing
 Add this library to your [Composer](https://packagist.org/packages/adrian0350/simple-pdo-wrapper) configuration. In
@@ -22,7 +20,7 @@ composer.json:
   }
 ```
 
-## OR
+### Or
 
 If you're using bash.
 ```
@@ -30,7 +28,6 @@ $ composer require adrian0350/simple-pdo-wrapper
 ```
 
 # Usage
-
 For usage just call the methods from your SimplePDOWrapper instance object.
 ```
 <?php
@@ -43,8 +40,25 @@ $conf = array(
 	'password' => 'toor',
 	'host' => 'localhost'
 );
-
 $SimplePDOWrapper = new SimplePDOWrapper($conf);
+```
+## Options param
+Options are available with
+* conditions
+* limit
+* fields
+* order
+
+```
+// For now conditions only has basic clause.
+$options = array(
+	'conditions' => array(
+			'username' => 'john.doe@email.com'
+		),
+	'limit' => 10,
+	'fields' => array('id', 'username', 'password', 'name'),
+	'order' => array('id DESC')
+);
 ```
 ## Save New Entry
 
@@ -73,27 +87,7 @@ $SimplePDOWrapper->update('users', $update, array(
 ));
 ```
 
-## Find Single Entry
-
-Options are available with
-* conditions
-* limit
-* fields
-* order
-
-```
-// For now conditions are very simple:
-$options = array(
-	'conditions' => array(
-			'username' => 'john.doe@email.com'
-		),
-	'limit' => 10,
-	'fields' => array('id', 'username', 'password', 'name'),
-	'order' => array('id DESC')
-);
-```
-
-## Save New Entry
+## findOne & findAll
 This methods receive 3 params in total, entity (table), options (see above) and
 assoc (boolean) to get an associative array or STDClass object.
 ```
