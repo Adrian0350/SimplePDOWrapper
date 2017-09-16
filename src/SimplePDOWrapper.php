@@ -72,10 +72,11 @@ class SimplePDOWrapper
 	/**
 	 * Method to instantiate {this}{DB} with given credentials.
 	 *
-	 * @param string $db       Database name.
-	 * @param string $user     Database username.
-	 * @param string $password Database username password.
-	 * @param string $host     Database host.
+	 * @param  string $db       Database name.
+	 * @param  string $user     Database username.
+	 * @param  string $password Database username password.
+	 * @param  string $host     Database host.
+	 * @return boolean
 	 */
 	private function connect($db, $user, $password, $host = 'localhost')
 	{
@@ -91,17 +92,17 @@ class SimplePDOWrapper
 	 * This method will remove auto increment keys and
 	 * require schema's fields to avoid obvious PDO exceptions.
 	 *
-	 * @param  string $table Entity to save into.
-	 * @param  array  $data  Entity's data to save.
-	 * @throws Exception     About not being able to save data.
-	 * @return mixed $result Null or the new entry.
+	 * @param  string $entity Entity to save into.
+	 * @param  array  $data   Entity's data to save.
+	 * @throws Exception      About not being able to save data.
+	 * @return mixed $result  Null or the new entry.
 	 */
-	public function save($table, $data = array())
+	public function save($entity, $data = array())
 	{
 		$result = null;
 		try
 		{
-			$schema = self::getTableSchema($table);
+			$schema = self::getTableSchema($entity);
 			foreach ($data as $field => $value)
 			{
 				if (isset($schema[$field]) && $schema[$field]['extra'] == 'auto_increment')
@@ -112,13 +113,13 @@ class SimplePDOWrapper
 
 			$this->db->beginTransaction();
 
-			$transaction = $this->db->prepare(self::buildQuery($table, 'save', $data, array()));
+			$transaction = $this->db->prepare(self::buildQuery($entity, 'save', $data, array()));
 			if (!$transaction->execute())
 			{
 				throw new Exception('Data could not be saved :/');
 			}
 
-			$result = $this->findOne($table, array(
+			$result = $this->findOne($entity, array(
 				'conditions' => array(
 					'id' => $this->db->lastInsertId()
 				)
@@ -146,12 +147,12 @@ class SimplePDOWrapper
 	 * This method will require schema's fields to avoid obvious
 	 * PDO exceptions.
 	 *
-	 * @param  string $table Entity to save into.
-	 * @param  array  $data  Entity's data to save.
-	 * @throws Exception     About not being able to save data.
-	 * @return mixed $result Null or the new entry.
+	 * @param  string $entity Entity to save into.
+	 * @param  array  $data   Entity's data to save.
+	 * @throws Exception      About not being able to save data.
+	 * @return mixed $result  Null or the new entry.
 	 */
-	public function update($table, $data = array(), $conditions = array())
+	public function update($entity, $data = array(), $conditions = array())
 	{
 		$result = null;
 		try
@@ -161,7 +162,7 @@ class SimplePDOWrapper
 				throw new Exception('No conditions where given. Can\'t update blidly');
 			}
 
-			$schema = self::getTableSchema($table);
+			$schema = self::getTableSchema($entity);
 
 			foreach ($schema as $field => $description)
 			{
@@ -173,7 +174,7 @@ class SimplePDOWrapper
 
 			$this->db->beginTransaction();
 
-			$transaction = $this->db->prepare(self::buildQuery($table, 'update', $data, $conditions));
+			$transaction = $this->db->prepare(self::buildQuery($entity, 'update', $data, $conditions));
 			if (!$result = $transaction->execute())
 			{
 				throw new Exception('Data could not be saved :/');

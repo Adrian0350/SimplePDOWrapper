@@ -1,3 +1,5 @@
+[![PHP version](https://badge.fury.io/ph/adrian0350%2Fsimple-pdo-wrapper@2x.png)](https://badge.fury.io/ph/adrian0350%2Fsimple-pdo-wrapper)
+
 # Introduction
 
 SimplePDOWrapper's purpose is to help you handle simple database actions with a reduced
