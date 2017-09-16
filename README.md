@@ -20,6 +20,13 @@ composer.json:
   }
 ```
 
+## OR
+
+If you're using bash.
+```
+$ composer require adrian0350/simple-pdo-wrapper
+```
+
 # Usage
 
 For usage just call the methods from your SimplePDOWrapper instance object.
@@ -82,10 +89,12 @@ $options = array(
 ```
 
 ## Save New Entry
+This methods receive 3 params in total, entity (table), options (see above) and
+assoc (boolean) to get an associative array or STDClass object.
 ```
-// This findOne will return the saved entity or null.
-$user = $SimplePDOWrapper->findOne('users', $options);
+// This findOne will return the one entity array or null.
+$user = $SimplePDOWrapper->findOne('users', $options, $assoc = true);
 
-// And findAll will return null or an array of entities.
-$users = $SimplePDOWrapper->findAll('users', $options);
+// And findAll will return null or an array of STDClass objects.
+$users = $SimplePDOWrapper->findAll('users', $options, $assoc = false);
 ```
