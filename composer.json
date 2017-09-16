@@ -1,0 +1,18 @@
+{
+	"name": "adrian0350/simple-pdo-wrapper",
+	"description": "As its name suggests, it is a simple PDO wrapper to facilitate/simplify/beautify sql syntax and PDO usage.",
+	"type": "library",
+	"keywords": ["PDO", "PHP", "MYSQL", "Database", "Wrapper"],
+	"homepage": "https://github.com/Adrian0350/SimplePDOWrapper",
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Jaime Zúñiga",
+			"email": "jaime.ziga@gmail.com",
+			"role": "Developer"
+		}
+	],
+	"require": {
+		"php": ">=5.0"
+	}
+}
