@@ -80,8 +80,11 @@ Options are available with
 * order
 
 ```
+// For now conditions are very simple:
 $options = array(
-	'conditions' => array(),
+	'conditions' => array(
+			'username' => 'john.doe@email.com'
+		),
 	'limit' => 10,
 	'fields' => array('id', 'username', 'password', 'name'),
 	'order' => array('id DESC')
