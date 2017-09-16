@@ -26,7 +26,7 @@ $SimplePDOWrapper->update('users', $update, array(
 	'conditions' => array(
 		'id' => $user_saved['id']
 	)
-))
+));
 
 $options = array(
 	'conditions' => array(),
