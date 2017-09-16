@@ -3,13 +3,21 @@
 SimplePDOWrapper's purpose is to help you handle simple database actions with a reduced
 amount of code as well as writting less-messy code following a simple structure.
 
+You can:
+ * Save
+ * Update
+ * Find one
+ * Find all
+ * Set database (switch on the fly)
+ * Error handling through public var @errors
+
 # Dependencies
 
  * [PHP PDO](http://php.net/manual/en/book.pdo.php)
 
 # PHP Version
 
-This class is compatible with **PHP 5.0 and above** due to the **PHP PDO** class dependency.
+This class is compatible with **PHP 5.0 and above** due to the **PHP PDO** dependency.
 
 # Installing
 Add this library to your [Composer](https://packagist.org/packages/adrian0350/simple-pdo-wrapper) configuration. In
@@ -61,7 +69,6 @@ $options = array(
 );
 ```
 ## Save New Entry
-
 ```
 // After saving you will receive the last saved entity.
 $save = array(
@@ -74,7 +81,6 @@ $user_saved = $SimplePDOWrapper->save('users', $save);
 ```
 
 ## Update New Entry
-
 ```
 // When updating it will only return true or false.
 $update = array(
@@ -96,4 +102,38 @@ $user = $SimplePDOWrapper->findOne('users', $options, $assoc = true);
 
 // And findAll will return null or an array of STDClass objects.
 $users = $SimplePDOWrapper->findAll('users', $options, $assoc = false);
+```
+
+## Switch database
+Just like instantiating the class.
+```
+// Switch database with setDatabase() method
+// and pass credentials in $conf array.
+$conf = array(
+	'database' => 'another_db',
+	'username' => 'root',
+	'password' => 'toor',
+	'host' => 'localhost'
+);
+
+// Will return boolean.
+$SimplePDOWrapper->setDatabase($conf);
+``````
+
+## Handling errors
+Since it's internally set to handle errors you can handle them like this.
+```
+// As I mentioned before update method will return a boolean value.
+$updated = $SimplePDOWrapper->update('users', $update, array(
+	'conditions' => array(
+		'id' => $user_saved['id']
+	)
+))
+
+// Watching errors
+if (!$updated || $SimplePDOWrapper->errors)
+{
+	var_dump($SimplePDOWrapper->errors['code']);
+	var_dump($SimplePDOWrapper->errors['message']);
+}
 ```

@@ -11,14 +11,14 @@ class SimplePDOWrapper
 	 *
 	 * @var object
 	 */
-	private $db = null;
+	protected $db = null;
 
 	/**
 	 * Errors template.
 	 *
 	 * @var array
 	 */
-	private $_errors = array(
+	protected $_errors = array(
 		'code' => null,
 		'message' => null
 	);
@@ -38,26 +38,41 @@ class SimplePDOWrapper
 	 * @param  array $db_credentials Mysql credentials for login.
 	 * @return void
 	 */
-	public function __construct($db_credentials = array())
+	public function __construct($conf = array())
 	{
 		if (!class_exists('PDO'))
 		{
-			return null;
+			throw new ErrorException('PDO Class is missing in PHP!');
 		}
 
-		if ($db_credentials)
+		$this->setDatabase($conf);
+	}
+
+	/**
+	 * If you feel like changing database on the fly just
+	 * pass credentials.
+	 *
+	 * @param  array $options Should contain array of credentials.
+	 * @return boolean
+	 */
+	public function setDatabase($conf = array())
+	{
+		$connected = false;
+		if ($conf)
 		{
 			try
 			{
-				$db       = (string) $db_credentials['database'];
-				$host     = (string) $db_credentials['host'];
-				$user     = (string) $db_credentials['user'];
-				$password = (string) $db_credentials['password'];
+				$db       = (string) $conf['database'];
+				$host     = (string) $conf['host'];
+				$user     = (string) $conf['user'];
+				$password = (string) $conf['password'];
 
 				if (!$this->connect($db, $user, $password, $host))
 				{
-					throw new Exception('Database could not connect with given credentials.');
+					throw new InvalidArgumentException('Database could not connect with given credentials.');
 				}
+
+				$connected = true;
 			}
 			catch (Exception $e)
 			{
@@ -66,6 +81,10 @@ class SimplePDOWrapper
 					'message' => $e->getMessage()
 				) + $this->_errors;
 			}
+		}
+		finally
+		{
+			return $connected;
 		}
 	}
 
@@ -203,7 +222,7 @@ class SimplePDOWrapper
 	 * @param  string $entity  Database table.
 	 * @param  array  $options Query options like 'conditions', 'limit', 'order', etc.
 	 * @param  bool   $assoc   Return associative array or stdclass object.
-	 * @throws Exception Entity was not specified.
+	 * @throws Exception       Entity was not specified.
 	 * @return mixed
 	 */
 	public function findOne($entity, $options = array(), $assoc = true)
@@ -235,7 +254,7 @@ class SimplePDOWrapper
 	 * @param  string $entity  Database table.
 	 * @param  array  $options Query options like 'conditions', 'limit', 'order', etc.
 	 * @param  bool   $assoc   Return associative array or object class.
-	 * @throws Exception Entity was not specified.
+	 * @throws Exception       Entity was not specified.
 	 * @return mixed
 	 */
 	public function findAll($entity, $options = array(), $assoc = true)
@@ -286,18 +305,18 @@ class SimplePDOWrapper
 	/**
 	 * Builds a query from options.
 	 * Currently supports:
-	 * Â· Insert
-	 * Â· Update
-	 * Â· Find one
-	 * Â· Find all (with conditions and stuff)
+	 *	· Insert
+	 *	· Update
+	 *	· Find one
+	 *	· Find all (with conditions and stuff)
 	 *
-	 * @param string  $table   Entity table.
-	 * @param string  $action  Action to perform (save, find, etc).
-	 * @param array   $data    The data to manipulate in case of save or update.
-	 * @param array   $options Containing available clauses (conditions, order, fields, limit, where).
-	 * @return string $query Query built.
+	 * @param  string  $table   Entity table.
+	 * @param  string  $action  Action to perform (save, find, etc).
+	 * @param  array   $data    The data to manipulate in case of save or update.
+	 * @param  array   $options Containing available clauses (conditions, order, fields, limit, where).
+	 * @return string  $query   Query built.
 	 */
-	public function buildQuery($table, $action = 'save', $data, $options = array())
+	private function buildQuery($table, $action = 'save', $data, $options = array())
 	{
 		$query  = '';
 		$action = strtolower($action);
@@ -357,6 +376,6 @@ class SimplePDOWrapper
 			$query = "SELECT $fields FROM $table $where $order $limit";
 		}
 
-		return str_replace('  ', ' ', $query);
+		return (string) $query;
 	}
 }
