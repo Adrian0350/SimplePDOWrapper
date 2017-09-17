@@ -81,10 +81,10 @@ class SimplePDOWrapper
 					'message' => $e->getMessage()
 				) + $this->_errors;
 			}
-		}
-		finally
-		{
-			return $connected;
+			finally
+			{
+				return $connected;
+			}
 		}
 	}
 
