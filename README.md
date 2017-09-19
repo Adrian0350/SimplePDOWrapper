@@ -104,6 +104,24 @@ $user = $SimplePDOWrapper->findOne('users', $options, $assoc = true);
 $users = $SimplePDOWrapper->findAll('users', $options, $assoc = false);
 ```
 
+## delete & deleteAll
+The only difference between delete and deleteAll is that
+'delete' receives the options argument with 'conditions'.
+```
+// Options just needs compliant conditions.
+$options = array(
+    'conditions' => array(
+        'id' => 666
+    )
+);
+
+// Boolean
+$deleted = $this->SimplePDOWrapper->delete('users', $options);
+
+// Boolean
+$deleted = $this->SimplePDOWrapper->deleteAll('users');
+```
+
 ## Switch database
 Just like instantiating the class.
 ```
