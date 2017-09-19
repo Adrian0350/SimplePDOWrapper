@@ -281,6 +281,39 @@ class SimplePDOWrapper
 	}
 
 	/**
+	 * Delete a record or many from a given entity (table).
+	 *
+	 * @param  string $entity  Table name.
+	 * @param  array  $options Conditions container.
+	 * @return boolean
+	 */
+	public function delete($entity, $options = array())
+	{
+		$result = false;
+		try
+		{
+			if (!$options || !$options['conditions'])
+			{
+				throw new InvalidArgumentException('Options conditions are missing!');
+			}
+
+			$transaction = $this->db->prepare(self::buildQuery($entity, 'delete', array(), $options));
+			$result = $transaction->execute();
+		}
+		catch (Exception $e)
+		{
+			$this->errors = array(
+				'code' => $e->getCode(),
+				'message' => $e->getMessage()
+			) + $this->_errors;
+		}
+		finally
+		{
+			return $result;
+		}
+	}
+
+	/**
 	 * Get a table's schema.
 	 *
 	 * @param  string $table  The table we want to extract the schema from.
@@ -374,6 +407,10 @@ class SimplePDOWrapper
 		elseif ($action == 'find_all')
 		{
 			$query = "SELECT $fields FROM $table $where $order $limit";
+		}
+		elseif ($action == 'delete')
+		{
+			$query = "DELETE FROM $table $where";
 		}
 
 		return (string) $query;
