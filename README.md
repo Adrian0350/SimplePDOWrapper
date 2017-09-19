@@ -116,10 +116,10 @@ $options = array(
 );
 
 // Boolean
-$deleted = $this->SimplePDOWrapper->delete('users', $options);
+$deleted = $SimplePDOWrapper->delete('users', $options);
 
 // Boolean
-$deleted = $this->SimplePDOWrapper->deleteAll('users');
+$deleted = $SimplePDOWrapper->deleteAll('users');
 ```
 
 ## Switch database
