@@ -260,7 +260,7 @@ class SimplePDOWrapper
 		$result = false;
 		try
 		{
-			$transaction = $this->db->prepare(self::buildQuery($entity, 'delete_all', array(), $options));
+			$transaction = $this->db->prepare(self::buildQuery($entity, 'delete_all', array()));
 			$result = $transaction->execute();
 		}
 		catch (Exception $e)
