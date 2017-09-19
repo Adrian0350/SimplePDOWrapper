@@ -114,7 +114,7 @@ class SimplePDOWrapper
 	 * @param  string $entity Entity to save into.
 	 * @param  array  $data   Entity's data to save.
 	 * @throws Exception      About not being able to save data.
-	 * @return mixed $result  Null or the new entry.
+	 * @return array  $result Array or the new entry.
 	 */
 	public function save($entity, $data = array())
 	{
@@ -166,10 +166,10 @@ class SimplePDOWrapper
 	 * This method will require schema's fields to avoid obvious
 	 * PDO exceptions.
 	 *
-	 * @param  string $entity Entity to save into.
-	 * @param  array  $data   Entity's data to save.
-	 * @throws Exception      About not being able to save data.
-	 * @return mixed $result  Null or the new entry.
+	 * @param  string  $entity  Entity to save into.
+	 * @param  array   $data    Entity's data to save.
+	 * @throws Exception        About not being able to save data.
+	 * @return boolean $result  Null or the new entry.
 	 */
 	public function update($entity, $data = array(), $conditions = array())
 	{
@@ -304,7 +304,7 @@ class SimplePDOWrapper
 		}
 		finally
 		{
-			return $result ? $result[0] : null;
+			return $result ? $result[0] : array();
 		}
 	}
 
@@ -336,7 +336,7 @@ class SimplePDOWrapper
 		}
 		finally
 		{
-			return $result ? $result : null;
+			return $result ? $result : array();
 		}
 	}
 
