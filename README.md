@@ -6,6 +6,8 @@ amount of code as well as writting less-messy code following a simple structure.
 You can:
  * Save
  * Update
+ * Delete (with conditions)
+ * Delete all (without conditions)
  * Find one
  * Find all
  * Set database (switch on the fly)
