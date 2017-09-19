@@ -217,6 +217,66 @@ class SimplePDOWrapper
 	}
 
 	/**
+	 * Delete a record or many from a given entity (table).
+	 *
+	 * @param  string $entity  Table name.
+	 * @param  array  $options Conditions container.
+	 * @return boolean
+	 */
+	public function delete($entity, $options = array())
+	{
+		$result = false;
+		try
+		{
+			if (!$options || !$options['conditions'])
+			{
+				throw new InvalidArgumentException('Options conditions are missing!');
+			}
+
+			$transaction = $this->db->prepare(self::buildQuery($entity, 'delete', array(), $options));
+			$result = $transaction->execute();
+		}
+		catch (Exception $e)
+		{
+			$this->errors = array(
+				'code' => $e->getCode(),
+				'message' => $e->getMessage()
+			) + $this->_errors;
+		}
+		finally
+		{
+			return $result;
+		}
+	}
+
+	/**
+	 * Deletes all records from a given entity (table).
+	 *
+	 * @param  string $entity Table name.
+	 * @return boolean
+	 */
+	public function deleteAll($entity)
+	{
+		$result = false;
+		try
+		{
+			$transaction = $this->db->prepare(self::buildQuery($entity, 'delete_all', array(), $options));
+			$result = $transaction->execute();
+		}
+		catch (Exception $e)
+		{
+			$this->errors = array(
+				'code' => $e->getCode(),
+				'message' => $e->getMessage()
+			) + $this->_errors;
+		}
+		finally
+		{
+			return $result;
+		}
+	}
+
+	/**
 	 * Search for only ONE record from a given entity.
 	 *
 	 * @param  string $entity  Database table.
@@ -277,39 +337,6 @@ class SimplePDOWrapper
 		finally
 		{
 			return $result ? $result : null;
-		}
-	}
-
-	/**
-	 * Delete a record or many from a given entity (table).
-	 *
-	 * @param  string $entity  Table name.
-	 * @param  array  $options Conditions container.
-	 * @return boolean
-	 */
-	public function delete($entity, $options = array())
-	{
-		$result = false;
-		try
-		{
-			if (!$options || !$options['conditions'])
-			{
-				throw new InvalidArgumentException('Options conditions are missing!');
-			}
-
-			$transaction = $this->db->prepare(self::buildQuery($entity, 'delete', array(), $options));
-			$result = $transaction->execute();
-		}
-		catch (Exception $e)
-		{
-			$this->errors = array(
-				'code' => $e->getCode(),
-				'message' => $e->getMessage()
-			) + $this->_errors;
-		}
-		finally
-		{
-			return $result;
 		}
 	}
 
@@ -411,6 +438,10 @@ class SimplePDOWrapper
 		elseif ($action == 'delete')
 		{
 			$query = "DELETE FROM $table $where";
+		}
+		elseif ($action == 'delete_all')
+		{
+			$query = "DELETE FROM $table"
 		}
 
 		return (string) $query;
