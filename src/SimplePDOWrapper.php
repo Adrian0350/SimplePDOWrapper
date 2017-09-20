@@ -58,33 +58,36 @@ class SimplePDOWrapper
 	public function setDatabase($conf = array())
 	{
 		$connected = false;
-		if ($conf)
+
+		try
 		{
-			try
+			if (!$conf)
 			{
-				$db       = (string) $conf['database'];
-				$host     = (string) $conf['host'];
-				$user     = (string) $conf['user'];
-				$password = (string) $conf['password'];
+				throw new InvalidArgumentException('Configuration arguments are missing!');
+			}
 
-				if (!$this->connect($db, $user, $password, $host))
-				{
-					throw new InvalidArgumentException('Database could not connect with given credentials.');
-				}
+			$db       = (string) $conf['database'];
+			$host     = (string) $conf['host'];
+			$user     = (string) $conf['user'];
+			$password = (string) $conf['password'];
 
-				$connected = true;
-			}
-			catch (Exception $e)
+			if (!$this->connect($db, $user, $password, $host))
 			{
-				$this->errors = array(
-					'code' => $e->getCode(),
-					'message' => $e->getMessage()
-				) + $this->_errors;
+				throw new InvalidArgumentException('Database could not connect with given credentials.');
 			}
-			finally
-			{
-				return $connected;
-			}
+
+			$connected = true;
+		}
+		catch (Exception $e)
+		{
+			$this->errors = array(
+				'code' => $e->getCode(),
+				'message' => $e->getMessage()
+			) + $this->_errors;
+		}
+		finally
+		{
+			return $connected;
 		}
 	}
 
@@ -348,7 +351,7 @@ class SimplePDOWrapper
 	 */
 	private function getTableSchema($table)
 	{
-		$schema = null;
+		$schema = array();
 
 		$transaction = $this->db->prepare("SHOW COLUMNS FROM `$table`");
 		$transaction->execute();
