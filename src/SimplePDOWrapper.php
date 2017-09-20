@@ -391,14 +391,28 @@ class SimplePDOWrapper
 
 		if (isset($options['conditions']) && $options['conditions'])
 		{
-			foreach ($options['conditions'] as $field => $condition)
+			$conditions_regex = '/(like|LIKE|<|>|!=|=)$/';
+			foreach ($options['conditions'] as $condition => $value)
 			{
-				$where .= " $field='$condition'";
+				preg_match($conditions_regex, $condition, $spec_condition);
+
+				if ($spec_condition)
+				{
+					$spec_condition = strtoupper($spec_condition[0]);
+					$value          = $spec_condition == 'LIKE' ? '%$value%' : $value;
+					$condition      = preg_replace($conditions_regex, '', $condition);
+
+					$where .= " $condition $spec_condition '$value' AND";
+				}
+				else
+				{
+					$where .= " $condition='$value' AND";
+				}
 			}
 
 			if ($where)
 			{
-				$where = 'WHERE'.$where;
+				$where = 'WHERE'.preg_replace('/AND$/i', '', $where);
 			}
 		}
 
@@ -444,7 +458,7 @@ class SimplePDOWrapper
 		}
 		elseif ($action == 'delete_all')
 		{
-			$query = "DELETE FROM $table"
+			$query = "DELETE FROM $table";
 		}
 
 		return (string) $query;
