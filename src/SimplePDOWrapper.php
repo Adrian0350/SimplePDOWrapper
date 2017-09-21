@@ -85,10 +85,8 @@ class SimplePDOWrapper
 				'message' => $e->getMessage()
 			) + $this->_errors;
 		}
-		finally
-		{
-			return $connected;
-		}
+
+		return $connected;
 	}
 
 	/**
@@ -158,10 +156,8 @@ class SimplePDOWrapper
 
 			$this->db->rollback();
 		}
-		finally
-		{
-			return $result;
-		}
+
+		return $result;
 	}
 
 	/**
@@ -213,10 +209,8 @@ class SimplePDOWrapper
 
 			$this->db->rollback();
 		}
-		finally
-		{
-			return $result;
-		}
+
+		return $result;
 	}
 
 	/**
@@ -246,10 +240,8 @@ class SimplePDOWrapper
 				'message' => $e->getMessage()
 			) + $this->_errors;
 		}
-		finally
-		{
-			return $result;
-		}
+
+		return $result;
 	}
 
 	/**
@@ -273,10 +265,8 @@ class SimplePDOWrapper
 				'message' => $e->getMessage()
 			) + $this->_errors;
 		}
-		finally
-		{
-			return $result;
-		}
+
+		return $result;
 	}
 
 	/**
@@ -305,10 +295,8 @@ class SimplePDOWrapper
 				'message' => $e->getMessage()
 			) + $this->_errors;
 		}
-		finally
-		{
-			return $result ? $result[0] : array();
-		}
+
+		return $result ? $result[0] : array();
 	}
 
 	/**
@@ -337,10 +325,8 @@ class SimplePDOWrapper
 				'message' => $e->getMessage()
 			) + $this->_errors;
 		}
-		finally
-		{
-			return $result ? $result : array();
-		}
+
+		return $result ? $result : array();
 	}
 
 	/**
@@ -423,8 +409,8 @@ class SimplePDOWrapper
 
 			foreach ($data as $field => $value)
 			{
-				$fields[] = filter_var($field, FILTER_SANITIZE_STRING);
-				$values[] = filter_var($value, FILTER_SANITIZE_STRING);
+				$fields[] = $field;
+				$values[] = $value;
 			}
 
 			$insert = '('.implode(', ', $fields).') VALUES (\''.implode('\', \'', $values).'\')';
@@ -435,8 +421,6 @@ class SimplePDOWrapper
 			$update = 'SET ';
 			foreach ($data as $field => $value)
 			{
-				$field = filter_var($field, FILTER_SANITIZE_STRING);
-				$value = filter_var($value, FILTER_SANITIZE_STRING);
 				$update .= "$field='$value', ";
 			}
 
