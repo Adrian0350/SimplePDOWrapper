@@ -55,6 +55,7 @@ $SimplePDOWrapper = new SimplePDOWrapper($conf);
 ## Options param
 Options are available with
 * conditions
+  * Accepts 'field >', 'field <', 'field !=', 'field LIKE'
 * limit
 * fields
 * order
