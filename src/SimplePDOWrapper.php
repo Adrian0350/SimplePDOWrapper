@@ -45,7 +45,10 @@ class SimplePDOWrapper
 			throw new ErrorException('PDO Class is missing in PHP!');
 		}
 
-		$this->setDatabase($conf);
+		if ($conf)
+		{
+			$this->setDatabase($conf);
+		}
 	}
 
 	/**
@@ -63,7 +66,7 @@ class SimplePDOWrapper
 		{
 			if (!$conf)
 			{
-				throw new InvalidArgumentException('Configuration arguments are missing!');
+				throw new InvalidArgumentException('Configuration arguments are missing!', 1);
 			}
 
 			$db       = (string) $conf['database'];
@@ -71,9 +74,9 @@ class SimplePDOWrapper
 			$user     = (string) $conf['user'];
 			$password = (string) $conf['password'];
 
-			if (!$this->connect($db, $user, $password, $host))
+			if (!self::connect($db, $user, $password, $host))
 			{
-				throw new InvalidArgumentException('Database could not connect with given credentials.');
+				throw new InvalidArgumentException('Database could not connect with given credentials.', 1);
 			}
 
 			$connected = true;
@@ -100,8 +103,10 @@ class SimplePDOWrapper
 	 */
 	private function connect($db, $user, $password, $host = 'localhost')
 	{
+		$this->db = null;
 		$this->db = new PDO("mysql:host=$host;dbname=$db;charset=utf8", $user, $password);
 		$this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+		$this->db->setAttribute(PDO::ATTR_PERSISTENT, true);
 		$this->db->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, false);
 
 		return !!$this->db;
@@ -367,12 +372,14 @@ class SimplePDOWrapper
 	 */
 	private function buildQuery($table, $action = 'save', $data, $options = array())
 	{
+		$schema = self::getTableSchema($table);
 		$query  = '';
 		$action = strtolower($action);
 		$insert = '';
 		$where  = '';
 		$limit  = isset($options['limit']) && $options['limit'] ? "LIMIT {$options['limit']}" : '';
-		$fields = isset($options['fields']) && $options['fields'] ? implode(',', $options['fields']) : '*';
+		$fields = $schema ? implode(',', array_keys($schema)) : '*';
+		$fields = isset($options['fields']) && $options['fields'] ? implode(',', $options['fields']) : $fields;
 		$order  = isset($options['order']) && $options['order'] ? 'ORDER BY '.implode(', ', $options['order']) : '';
 
 		if (isset($options['conditions']) && $options['conditions'])
@@ -445,6 +452,6 @@ class SimplePDOWrapper
 			$query = "DELETE FROM $table";
 		}
 
-		return (string) $query;
+		return (string) preg_replace('/\s{2,}/', ' ', $query);
 	}
 }
