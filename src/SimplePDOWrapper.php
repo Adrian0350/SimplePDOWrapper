@@ -32,6 +32,13 @@ class SimplePDOWrapper
 	public $errors = null;
 
 	/**
+	 * Executed queries.
+	 *
+	 * @var array
+	 */
+	private $exect_queries = array();
+
+	/**
 	 * Constructor.
 	 * Checks for important stuff before constructing the instance.
 	 *
@@ -335,6 +342,26 @@ class SimplePDOWrapper
 	}
 
 	/**
+	 * Returns last executed query.
+	 *
+	 * @return mixed
+	 */
+	public function getLastQuery()
+	{
+		return end($this->exect_queries);
+	}
+
+	/**
+	 * Returns all executed queries.
+	 *
+	 * @return array
+	 */
+	public function getExectQueries()
+	{
+		return $this->exect_queries;
+	}
+
+	/**
 	 * Get a table's schema.
 	 *
 	 * @param  string $table  The table we want to extract the schema from.
@@ -382,9 +409,9 @@ class SimplePDOWrapper
 		$fields = isset($options['fields']) && $options['fields'] ? implode(',', $options['fields']) : $fields;
 		$order  = isset($options['order']) && $options['order'] ? 'ORDER BY '.implode(', ', $options['order']) : '';
 
-		if (isset($options['conditions']) && $options['conditions'])
+		if (isset($options['conditions']) && array_filter($options['conditions']))
 		{
-			$conditions_regex = '/(like|LIKE|<|>|!=|=)$/';
+			$conditions_regex = '/(like|LIKE|<|>|!=|=|>=|<=)$/';
 			foreach ($options['conditions'] as $condition => $value)
 			{
 				preg_match($conditions_regex, $condition, $spec_condition);
@@ -403,10 +430,7 @@ class SimplePDOWrapper
 				}
 			}
 
-			if ($where)
-			{
-				$where = 'WHERE'.preg_replace('/AND$/i', '', $where);
-			}
+			$where = $where ? 'WHERE'.preg_replace('/AND$/i', '', $where) : '';
 		}
 
 		if ($action == 'save')
@@ -451,7 +475,8 @@ class SimplePDOWrapper
 		{
 			$query = "DELETE FROM $table";
 		}
+		$this->exect_queries[] = (string) preg_replace('/\s{2,}/', ' ', $query);
 
-		return (string) preg_replace('/\s{2,}/', ' ', $query);
+		return end($this->exect_queries);
 	}
 }
