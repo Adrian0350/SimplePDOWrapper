@@ -55,13 +55,13 @@ $SimplePDOWrapper = new SimplePDOWrapper($conf);
 ## Options param
 Options are available with
 * conditions
-  * '>'
-  * '<'
-  * '>='
-  * '<='
-  * '!='
-  * 'LIKE'
-  * And more complex clauses: '(UNIX_TIMESTAMP(calldate) + callduration) >=' 
+  * ```>```
+  * ```<```
+  * ```>=```
+  * ```<=```
+  * ```!=```
+  * ```LIKE```
+  * And more complex clauses: ```(UNIX_TIMESTAMP(calldate) + callduration) >=```
 * limit
 * fields
 * order
